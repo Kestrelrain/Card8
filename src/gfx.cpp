@@ -3,6 +3,8 @@
 #include "mem.h"
 
 
+extern const unsigned char font_data[];
+
 const uint16_t palette[16] = {
     0x0000, // 0: Black
     0x112B, // 1: Dark Blue
