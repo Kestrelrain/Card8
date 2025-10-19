@@ -10,7 +10,16 @@ extern uint8_t pico8_memory[PICO8_MEM_SIZE];
 #define MAP_MEM      0x2000
 #define SCREEN_MEM   0x6000
 #define DRAW_COLOR   0x5f25
+#define RNG_MEM 0x5f44  // Start of RNG state in PICO-8 memory
 
 #define currentColor pico8_memory[DRAW_COLOR]
+
+
+
+uint16_t read_u16(uint16_t addr);
+void write_u16(uint16_t addr, uint16_t val);
+uint32_t read_u32(uint16_t addr);
+void write_u32(uint16_t addr, uint32_t val);
+
 
 #endif

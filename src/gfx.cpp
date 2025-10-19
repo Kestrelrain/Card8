@@ -1,6 +1,6 @@
 #include "gfx.h"
 #include <M5Cardputer.h>
-#include "pico8_mem.h"
+#include "mem.h"
 
 
 const uint16_t pico8_palette[16] = {
@@ -35,7 +35,7 @@ void drawFramebuffer() {
 }
 */
 void drawFramebuffer() {
-    const int scale = 5;  // DEBUG ONLY
+    const int scale = 1;  // DEBUG ONLY
     const int scaledWidth = WIDTH * scale;
     const int scaledHeight = HEIGHT * scale;
 
@@ -115,9 +115,7 @@ void flip(){
     delay(33);           // ~30 FPS (1000ms / 30 = ~33.3ms)
 }
 
-float rnd() {
-    return (float)random(0, 0x10000) / 0x10000;  // ~0.000015 resolution
-}
+
 
 void cls(int col = 0) {
     Serial.print("cls() called with color index: "); //DEBUG
@@ -130,6 +128,3 @@ void cls(int col = 0) {
     }
 }
 
-float rnd(float n) {
-    return rnd() * n;
-}

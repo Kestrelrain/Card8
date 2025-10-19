@@ -13,8 +13,7 @@ uint8_t pget(int x, int y);
 void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y);
 void cls(int col);
 void flip();
-float rnd();          // No argument
-float rnd(float n);   // Single number
+
 
 // External framebuffer and palette
 extern uint8_t pico8_memory[];

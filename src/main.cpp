@@ -15,7 +15,7 @@ extern "C" {
 
 #include <M5Cardputer.h>
 #include <SD.h>
-#include "pico8_mem.h"
+#include "mem.h"
 #include "lua_func.h"
 #include "gfx.h"
 
@@ -23,6 +23,7 @@ String luaCode = "";
 
 //extern uint8_t pico8_memory[PICO8_MEM_SIZE];
 uint8_t pico8_memory[PICO8_MEM_SIZE];
+
 
 
 void loadGfxSection(File& file) {
