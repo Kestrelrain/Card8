@@ -1,4 +1,4 @@
-#include <Arduino.h>
+//#include <Arduino.h>
 #define WIDTH 128
 #define HEIGHT 128
 
@@ -172,9 +172,15 @@ void readP8File(const char* filename) {
 
 lua_State* L = luaL_newstate();
 void setup() {
-  M5.begin();
+  //M5.begin();
+  auto cfg = M5.config();
+  M5Cardputer.begin(cfg);
   delay(100);
   Serial.begin(115200);
+  Serial.println("test");
+  Serial.println("test");
+  Serial.println("test");
+
   SPI.begin(SD_SPI_SCK_PIN, SD_SPI_MISO_PIN, SD_SPI_MOSI_PIN, SD_SPI_CS_PIN);
   if (!SD.begin(SD_SPI_CS_PIN)) {
     M5.Lcd.println("2SD init failed!");
@@ -192,8 +198,20 @@ void setup() {
   register_lua_functions(L);
   pico8_memory[DRAW_COLOR] = 6;
 
+  M5.Lcd.fillScreen(TFT_RED);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.setTextColor(TFT_WHITE);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.println("Display Ok!");
   // Read and print .p8 file content from SD card
   readP8File("/game.p8");
+  Serial.println(luaCode);
+  Serial.println("test");
+  M5.Lcd.fillScreen(TFT_RED);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.setTextColor(TFT_WHITE);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.println("Display Ok!");
   //listFiles();
   // Example framebuffer fill: blocky color gradient
   //for (int y = 0; y < HEIGHT; y++) {
@@ -203,14 +221,25 @@ void setup() {
   //  }
   //}
   //pset(10, 10, 9);
-  //if (luaL_dostring(L, luaCode.c_str()) != 0) {
-  //  Serial.println(lua_tostring(L, -1));
-  //  lua_pop(L, 1);
-  //}
+    if (luaL_dostring(L, luaCode.c_str()) != 0) {
+     Serial.println(lua_tostring(L, -1));
+     lua_pop(L, 1);
+    }
+    lua_getglobal(L, "_init");
+  if (lua_isfunction(L, -1)) {
+    if (lua_pcall(L, 0, 0, 0) != 0) {
+     Serial.println("[Lua _init()] Error:");
+      Serial.println(lua_tostring(L, -1));
+     lua_pop(L, 1);
+   }
+  } else {
+    Serial.println("_init not defined.");
+    lua_pop(L, 1);
+  }
   //File gameFile = SD.open("/game.p8");
   //loadGfxSection(gameFile);
   //gameFile.close();
-  //drawFramebuffer();
+  drawFramebuffer();
 }
 
 void loop() {
