@@ -158,7 +158,7 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "abs", lua_abs);
   lua_register(L, "sin", lua_sin);
   lua_register(L, "cos", lua_cos);
-  lua_register(L, "atan2", lua_atan2);
+  lua_register(L, "atan2", lua_atan2);//Buggy
   lua_register(L, "flr", lua_flr);
   lua_register(L, "rnd", lua_rnd);
   lua_register(L, "sqrt", lua_sqrt);
