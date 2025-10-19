@@ -4,12 +4,24 @@
 
 
 const uint16_t pico8_palette[16] = {
-    0x0000, 0x1D34, 0x2589, 0x5AC9,
-    0xA4D1, 0xD4C1, 0xC5EC, 0xFFF5,
-    0xF800, 0xFA60, 0xFFEC, 0x5C2C,
-    0x6CF0, 0xEF00, 0xFBA0, 0xD5AD
+    0x0000, // 0: Black
+    0x112B, // 1: Dark Blue
+    0x4912, // 2: Dark Purple
+    0x042A, // 3: Dark Green
+    0xA145, // 4: Brown
+    0x7392, // 5: Dark Gray
+    0xDEDB, // 6: Light Gray
+    0xFFF3, // 7: White (PICO-8 white)
+    0xF809, // 8: Red
+    0xFD20, // 9: Orange
+    0xFFE4, // 10: Yellow
+    0x07F0, // 11: Green
+    0x5EDB, // 12: Blue
+    0x8413, // 13: Indigo
+    0xFB52, // 14: Pink
+    0xFD55  // 15: Peach
 };
-
+/*S
 void drawFramebuffer() {
     const int xOffset = (240 - WIDTH) / 2;
     const int yOffset = (135 - HEIGHT) / 2;
@@ -21,7 +33,30 @@ void drawFramebuffer() {
         }
     }
 }
+*/
+void drawFramebuffer() {
+    const int scale = 5;  // DEBUG ONLY
+    const int scaledWidth = WIDTH * scale;
+    const int scaledHeight = HEIGHT * scale;
 
+    // Center the framebuffer on the 240x135 screen
+    const int xOffset = (240 - scaledWidth) / 2;
+    const int yOffset = (135 - scaledHeight) / 2;
+
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            uint8_t color = pget(x, y);
+            uint16_t rgb = pico8_palette[color];
+
+            M5.Lcd.fillRect(
+                xOffset + x * scale,
+                yOffset + y * scale,
+                scale, scale,
+                rgb
+            );
+        }
+    }
+}
 
 void pset(int x, int y, int color) {
     if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return;
@@ -84,7 +119,9 @@ float rnd() {
     return (float)random(0, 0x10000) / 0x10000;  // ~0.000015 resolution
 }
 
-void cls(int col) {
+void cls(int col = 0) {
+    Serial.print("cls() called with color index: "); //DEBUG
+    Serial.println(col);
     col = col & 0x0F;
     uint8_t packed = (col << 4) | col;
 

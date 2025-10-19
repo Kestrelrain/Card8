@@ -1,4 +1,5 @@
-#Pico8 port for M5Cardputer#
+#Card8 for M5Cardputer#
+Pico-8 compatable console
 
 #Implemented Functions#
   #GFX#

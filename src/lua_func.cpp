@@ -32,14 +32,13 @@ int lua_rnd(lua_State* L) {
     }
 
     if (lua_istable(L, 1)) {
-        int len = lua_objlen(L, 1);  // Lua 5.1
+        int len = lua_objlen(L, 1);  
         if (len == 0) {
             lua_pushnil(L);
             return 1;
         }
 
-        int index = (int)(rnd((float)len)) + 1;  // 1-based Lua
-        lua_rawgeti(L, 1, index);
+        int index = (int)(rnd((float)len)) + 1;  
         return 1;
     }
 

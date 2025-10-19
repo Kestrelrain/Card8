@@ -196,7 +196,7 @@ void setup() {
 
   luaL_openlibs(L); // Load basic libs (math, string, etc.)
   register_lua_functions(L);
-  pico8_memory[DRAW_COLOR] = 6;
+
 
   M5.Lcd.fillScreen(TFT_RED);
   M5.Lcd.setCursor(0, 0);
@@ -212,7 +212,7 @@ void setup() {
   M5.Lcd.setTextColor(TFT_WHITE);
   M5.Lcd.setTextSize(2);
   M5.Lcd.println("Display Ok!");
-  //listFiles();
+
   // Example framebuffer fill: blocky color gradient
   //for (int y = 0; y < HEIGHT; y++) {
   //  for (int x = 0; x < WIDTH; x++) {
@@ -220,7 +220,7 @@ void setup() {
   //    setPixel(x, y, color);
   //  }
   //}
-  //pset(10, 10, 9);
+
     if (luaL_dostring(L, luaCode.c_str()) != 0) {
      Serial.println(lua_tostring(L, -1));
      lua_pop(L, 1);
@@ -236,9 +236,7 @@ void setup() {
     Serial.println("_init not defined.");
     lua_pop(L, 1);
   }
-  //File gameFile = SD.open("/game.p8");
-  //loadGfxSection(gameFile);
-  //gameFile.close();
+
   drawFramebuffer();
 }
 
@@ -246,8 +244,7 @@ void loop() {
   // Call _update() in Lua
   run_frame(L);
 
-  // Now push your framebuffer to the screen
-  //M5.Lcd.println("frame");
+
   drawFramebuffer();
 
   //delay(16);  // ~60 FPS
