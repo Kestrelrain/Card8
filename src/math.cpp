@@ -2,7 +2,7 @@
 #include <M5Cardputer.h>
 #include "mem.h"
 
-void pico8_rng_step() {
+void _rng_step() {
     // Swap 0x5f44 and 0x5f46 (2 bytes each)
     uint16_t a = read_u16(RNG_MEM);
     uint16_t b = read_u16(RNG_MEM + 2);
@@ -20,14 +20,14 @@ void pico8_rng_step() {
     write_u32(RNG_MEM + 4, val_b);
 }
 
-float pico8_rnd(float x) {
-    pico8_rng_step();
+float _rnd(float x) {
+    _rng_step();
     uint32_t raw = read_u32(RNG_MEM);
     float r = (raw & 0x7FFFFFFF) / 2147483648.0f;  // [0,1)
     return r * x;
 }
 
-void pico8_srand(uint32_t seed) {
+void _srand(uint32_t seed) {
     // You can choose any seed mixer (same as above)
     write_u32(RNG_MEM, seed ^ 0xA5A5A5A5);
     write_u32(RNG_MEM + 4, seed);

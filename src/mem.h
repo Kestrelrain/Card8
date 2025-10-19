@@ -1,10 +1,10 @@
-#ifndef PICO8_MEM_H
-#define PICO8_MEM_H
+#ifndef MEM_H
+#define MEM_H
 #include <Arduino.h>
 #pragma once
 
-#define PICO8_MEM_SIZE 0x8000
-extern uint8_t pico8_memory[PICO8_MEM_SIZE];
+#define CARD_MEM_SIZE 0x8000
+extern uint8_t memory[CARD_MEM_SIZE];
 
 #define GFX_MEM      0x0000
 #define MAP_MEM      0x2000
@@ -12,7 +12,7 @@ extern uint8_t pico8_memory[PICO8_MEM_SIZE];
 #define DRAW_COLOR   0x5f25
 #define RNG_MEM 0x5f44  // Start of RNG state in PICO-8 memory
 
-#define currentColor pico8_memory[DRAW_COLOR]
+#define currentColor memory[DRAW_COLOR]
 
 
 

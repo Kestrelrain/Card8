@@ -3,7 +3,7 @@
 #include "mem.h"
 
 
-const uint16_t pico8_palette[16] = {
+const uint16_t palette[16] = {
     0x0000, // 0: Black
     0x112B, // 1: Dark Blue
     0x4912, // 2: Dark Purple
@@ -46,7 +46,7 @@ void drawFramebuffer() {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
             uint8_t color = pget(x, y);
-            uint16_t rgb = pico8_palette[color];
+            uint16_t rgb = palette[color];
 
             M5.Lcd.fillRect(
                 xOffset + x * scale,
@@ -66,9 +66,9 @@ void pset(int x, int y, int color) {
     bool highNibble = (index % 2 == 0);
 
     if (highNibble) {
-        pico8_memory[SCREEN_MEM + byteIndex] = (pico8_memory[SCREEN_MEM + byteIndex] & 0x0F) | (color << 4);
+        memory[SCREEN_MEM + byteIndex] = (memory[SCREEN_MEM + byteIndex] & 0x0F) | (color << 4);
     } else {
-        pico8_memory[SCREEN_MEM + byteIndex] = (pico8_memory[SCREEN_MEM + byteIndex] & 0xF0) | (color & 0x0F);
+        memory[SCREEN_MEM + byteIndex] = (memory[SCREEN_MEM + byteIndex] & 0xF0) | (color & 0x0F);
     }
 }
 
@@ -79,7 +79,7 @@ uint8_t pget(int x, int y) {
     int byteIndex = index / 2;
     bool highNibble = (index % 2 == 0);
 
-    uint8_t byte = pico8_memory[SCREEN_MEM + byteIndex];
+    uint8_t byte = memory[SCREEN_MEM + byteIndex];
     return highNibble ? (byte >> 4) & 0x0F : byte & 0x0F;
 }
 
@@ -98,7 +98,7 @@ void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
                     int byteIndex = srcIndex / 2;
                     bool highNibble = (srcIndex % 2 == 0);
 
-                    uint8_t byte = pico8_memory[GFX_MEM + byteIndex];
+                    uint8_t byte = memory[GFX_MEM + byteIndex];
                     uint8_t color = highNibble ? (byte >> 4) & 0x0F : byte & 0x0F;
 
                     if (color != 0) {
@@ -124,7 +124,7 @@ void cls(int col = 0) {
     uint8_t packed = (col << 4) | col;
 
     for (int i = 0; i < 0x2000; i++) {
-        pico8_memory[SCREEN_MEM + i] = packed;
+        memory[SCREEN_MEM + i] = packed;
     }
 }
 

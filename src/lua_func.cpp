@@ -85,7 +85,7 @@ int lua_mid(lua_State* L) {
 // srand(seed)
 int lua_srand(lua_State* L) {
     uint32_t seed = luaL_checkinteger(L, 1);
-    pico8_srand(seed);
+    _srand(seed);
     return 0;
 }
 
@@ -126,7 +126,7 @@ int lua_flip(lua_State* L) {
 
 int lua_rnd(lua_State* L) {
     if (lua_gettop(L) == 0) {
-        lua_pushnumber(L, pico8_rnd());
+        lua_pushnumber(L, _rnd());
         return 1;
     }
 
@@ -136,13 +136,13 @@ int lua_rnd(lua_State* L) {
             lua_pushnil(L);
             return 1;
         }
-        int index = (int)(pico8_rnd(len));
+        int index = (int)(_rnd(len));
         lua_rawgeti(L, 1, index + 1); // Lua is 1-indexed
         return 1;
     }
 
     float x = luaL_checknumber(L, 1);
-    lua_pushnumber(L, pico8_rnd(x));
+    lua_pushnumber(L, _rnd(x));
     return 1;
 }
 

@@ -21,8 +21,8 @@ extern "C" {
 
 String luaCode = "";
 
-//extern uint8_t pico8_memory[PICO8_MEM_SIZE];
-uint8_t pico8_memory[PICO8_MEM_SIZE];
+//extern uint8_t memory[MEM_SIZE];
+uint8_t memory[CARD_MEM_SIZE];
 
 
 
@@ -152,9 +152,9 @@ void readP8File(const char* filename) {
         bool highNibble = (index % 2 == 0);
 
         if (highNibble) {
-          pico8_memory[GFX_MEM + byteIndex] = (pico8_memory[GFX_MEM + byteIndex] & 0x0F) | (color << 4);
+          memory[GFX_MEM + byteIndex] = (memory[GFX_MEM + byteIndex] & 0x0F) | (color << 4);
         } else {
-          pico8_memory[GFX_MEM + byteIndex] = (pico8_memory[GFX_MEM + byteIndex] & 0xF0) | (color & 0x0F);
+          memory[GFX_MEM + byteIndex] = (memory[GFX_MEM + byteIndex] & 0xF0) | (color & 0x0F);
         }
       }
 

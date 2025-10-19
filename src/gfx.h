@@ -16,5 +16,5 @@ void flip();
 
 
 // External framebuffer and palette
-extern uint8_t pico8_memory[];
-extern const uint16_t pico8_palette[16];
+extern uint8_t memory[];
+extern const uint16_t palette[16];
