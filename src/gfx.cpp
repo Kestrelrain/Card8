@@ -132,6 +132,51 @@ void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
     }
 }
 
+// filled circle (Midpoint circle algorithm or simple fill)
+void circfill(int x0, int y0, int r, int col) {
+    for (int y = -r; y <= r; y++) {
+        int dx = (int)sqrt(r*r - y*y);
+        for (int x = -dx; x <= dx; x++) {
+            pset(x0 + x, y0 + y, col);
+        }
+    }
+}
+
+// filled rectangle
+void rectfill(int x1, int y1, int x2, int y2, int col) {
+    for (int y = y1; y <= y2; y++)
+        for (int x = x1; x <= x2; x++)
+            pset(x, y, col);
+}
+
+// rectangle outline
+void rect(int x1, int y1, int x2, int y2, int col) {
+    for (int x = x1; x <= x2; x++) {
+        pset(x, y1, col);
+        pset(x, y2, col);
+    }
+    for (int y = y1; y <= y2; y++) {
+        pset(x1, y, col);
+        pset(x2, y, col);
+    }
+}
+
+// Bresenham’s line algorithm
+void line(int x0, int y0, int x1, int y1, int col) {
+    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy, e2;
+
+    while (true) {
+        pset(x0, y0, col);
+        if (x0 == x1 && y0 == y1) break;
+        e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+}
+
+
 void flip(){
     drawFramebuffer();   // Update the display
     M5Cardputer.update();

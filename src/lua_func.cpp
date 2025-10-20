@@ -159,6 +159,48 @@ int lua_btn(lua_State* L) {
     return 1;
 }
 
+int lua_circfill(lua_State* L) {
+    int x0 = luaL_checkinteger(L, 1);
+    int y0 = luaL_checkinteger(L, 2);
+    int r = luaL_checkinteger(L, 3);
+    int col = luaL_optinteger(L, 4, 7); // default color white
+    circfill(x0, y0, r, col);
+    return 0;
+}
+
+// rectfill(x1, y1, x2, y2, col)
+int lua_rectfill(lua_State* L) {
+    int x1 = luaL_checkinteger(L, 1);
+    int y1 = luaL_checkinteger(L, 2);
+    int x2 = luaL_checkinteger(L, 3);
+    int y2 = luaL_checkinteger(L, 4);
+    int col = luaL_optinteger(L, 5, 7);
+    rectfill(x1, y1, x2, y2, col);
+    return 0;
+}
+
+// rect(x1, y1, x2, y2, col)
+int lua_rect(lua_State* L) {
+    int x1 = luaL_checkinteger(L, 1);
+    int y1 = luaL_checkinteger(L, 2);
+    int x2 = luaL_checkinteger(L, 3);
+    int y2 = luaL_checkinteger(L, 4);
+    int col = luaL_optinteger(L, 5, 7);
+    rect(x1, y1, x2, y2, col);
+    return 0;
+}
+
+// line(x0, y0, x1, y1, col)
+int lua_line(lua_State* L) {
+    int x0 = luaL_checkinteger(L, 1);
+    int y0 = luaL_checkinteger(L, 2);
+    int x1 = luaL_checkinteger(L, 3);
+    int y1 = luaL_checkinteger(L, 4);
+    int col = luaL_optinteger(L, 5, 7);
+    line(x0, y0, x1, y1, col);
+    return 0;
+}
+
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
@@ -168,6 +210,10 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "pset", lua_pset);
   lua_register(L, "cls", lua_cls);
   lua_register(L, "flip", lua_flip);
+  lua_register(L, "circfill", lua_circfill);
+  lua_register(L, "rectfill", lua_rectfill);
+  lua_register(L, "rect", lua_rect);
+  lua_register(L, "line", lua_line);
   // Math
   lua_register(L, "abs", lua_abs);
   lua_register(L, "sin", lua_sin);
