@@ -98,6 +98,7 @@ void run_frame(lua_State* L) {
   } else {
     lua_pop(L, 1); // remove non-function
   }
+  M5Cardputer.update();
 
   // Flip framebuffer to screen
   drawFramebuffer();
@@ -244,9 +245,7 @@ void setup() {
 void loop() {
   // Call _update() in Lua
   run_frame(L);
-
-
-  drawFramebuffer();
+  
 
   //delay(16);  // ~60 FPS
 }

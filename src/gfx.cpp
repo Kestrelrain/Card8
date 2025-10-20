@@ -36,6 +36,26 @@ void drawFramebuffer() {
     }
 }
 */
+
+void drawFramebuffer() {
+    static uint16_t lcdBuffer[WIDTH * HEIGHT];  // RGB565 buffer for full screen
+
+    int i = 0;
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            uint8_t colorIndex = pget(x, y);
+            lcdBuffer[i++] = palette[colorIndex];  // Convert palette index to RGB565
+        }
+    }
+
+    // Center the image on 240x135 screen
+    int xOffset = (240 - WIDTH) / 2;
+    int yOffset = (135 - HEIGHT) / 2;
+
+    // Push the entire image at once
+    M5.Lcd.pushImage(xOffset, yOffset, WIDTH, HEIGHT, lcdBuffer);
+}
+/*
 void drawFramebuffer() {
     const int scale = 1;  // DEBUG ONLY
     const int scaledWidth = WIDTH * scale;
@@ -59,7 +79,7 @@ void drawFramebuffer() {
         }
     }
 }
-
+*/
 void pset(int x, int y, int color) {
     if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return;
 
@@ -114,14 +134,31 @@ void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
 
 void flip(){
     drawFramebuffer();   // Update the display
+    M5Cardputer.update();
     delay(33);           // ~30 FPS (1000ms / 30 = ~33.3ms)
 }
 
+bool btn(int i, int p = 0){
+    // Only support player 0 for now
+    if (p != 0) return false;
+
+    // Map button indices to key codes
+    switch (i) {
+        case 0: return M5Cardputer.Keyboard.isKeyPressed('a'); // Left
+        case 1: return M5Cardputer.Keyboard.isKeyPressed('d'); // Right
+        case 2: return M5Cardputer.Keyboard.isKeyPressed('e'); // Up
+        case 3: return M5Cardputer.Keyboard.isKeyPressed('s'); // Down
+        case 4: return M5Cardputer.Keyboard.isKeyPressed('k'); // Button O
+        case 5: return M5Cardputer.Keyboard.isKeyPressed('l'); // Button X
+        default: return false;
+    }
+    
+}
 
 
 void cls(int col = 0) {
-    Serial.print("cls() called with color index: "); //DEBUG
-    Serial.println(col);
+    //Serial.print("cls() called with color index: "); //DEBUG
+    //Serial.println(col);
     col = col & 0x0F;
     uint8_t packed = (col << 4) | col;
 

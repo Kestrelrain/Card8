@@ -77,7 +77,9 @@ int lua_mid(lua_State* L) {
     double a = luaL_checknumber(L, 1);
     double b = luaL_checknumber(L, 2);
     double c = luaL_checknumber(L, 3);
-    double result = std::max(std::min(a, b), std::min(std::max(a, b), c));
+    double result = a;
+    if ((b > a) != (b > c)) result = b;
+    else if ((c > a) != (c > b)) result = c;
     lua_pushnumber(L, result);
     return 1;
 }
@@ -93,8 +95,9 @@ int lua_srand(lua_State* L) {
 // sgn(x)
 int lua_sgn(lua_State* L) {
     double x = luaL_checknumber(L, 1);
-    lua_pushnumber(L, x < 0 ? -1 : 1);
-    return 1;
+    int sign = (x > 0) - (x < 0);
+    lua_pushnumber(L, sign);
+    return 0;
 }
 
 // sqrt(x)
@@ -145,16 +148,27 @@ int lua_rnd(lua_State* L) {
     lua_pushnumber(L, _rnd(x));
     return 1;
 }
- 
+
+int lua_btn(lua_State* L) {
+    int i = luaL_checkinteger(L, 1);
+    int p = luaL_optinteger(L, 2, 0);
+
+    bool result = btn(i, p);
+
+    lua_pushboolean(L, result);
+    return 1;
+}
 
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
+  //INPUT
+  lua_register(L, "btn", lua_btn);
   //GFX
   lua_register(L, "pset", lua_pset);
   lua_register(L, "cls", lua_cls);
   lua_register(L, "flip", lua_flip);
-    // Math
+  // Math
   lua_register(L, "abs", lua_abs);
   lua_register(L, "sin", lua_sin);
   lua_register(L, "cos", lua_cos);
