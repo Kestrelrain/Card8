@@ -23,6 +23,10 @@ const uint16_t palette[16] = {
     0xFB52, // 14: Pink
     0xFD55  // 15: Peach
 };
+uint8_t paletteRemap[16] = {
+    0, 1, 2, 3, 4, 5, 6, 7,
+    8, 9, 10, 11, 12, 13, 14, 15
+};
 /*S
 void drawFramebuffer() {
     const int xOffset = (240 - WIDTH) / 2;
@@ -36,6 +40,16 @@ void drawFramebuffer() {
     }
 }
 */
+void pal(int c0, int c1) {
+    if (c0 < 0 || c0 >= 16) return;
+    if (c1 < 0 || c1 >= 16) return;
+    paletteRemap[c0] = c1;
+}
+void pal_reset() {
+    for (int i = 0; i < 16; i++) {
+        paletteRemap[i] = i;
+    }
+}
 
 void drawFramebuffer() {
     static uint16_t lcdBuffer[WIDTH * HEIGHT];  // RGB565 buffer for full screen
@@ -44,7 +58,9 @@ void drawFramebuffer() {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
             uint8_t colorIndex = pget(x, y);
-            lcdBuffer[i++] = palette[colorIndex];  // Convert palette index to RGB565
+            // Remap the palette color before converting to RGB565
+            uint8_t remappedColor = paletteRemap[colorIndex];
+            lcdBuffer[i++] = palette[remappedColor];  
         }
     }
 

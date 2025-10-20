@@ -209,6 +209,12 @@ int lua_line(lua_State* L) {
     line(x0, y0, x1, y1, col);
     return 0;
 }
+int lua_pal(lua_State* L) {
+    int c0 = luaL_checkinteger(L, 1);
+    int c1 = luaL_checkinteger(L, 2);
+    pal(c0, c1);
+    return 0;
+}
 
 int lua_assert_(lua_State* L) {
     int cond = lua_toboolean(L, 1);  // get condition, false if nil or false
@@ -235,6 +241,7 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "rectfill", lua_rectfill);
   lua_register(L, "rect", lua_rect);
   lua_register(L, "line", lua_line);
+  lua_register(L, "pal", lua_pal);
   // Math
   lua_register(L, "abs", lua_abs);
   lua_register(L, "sin", lua_sin);
