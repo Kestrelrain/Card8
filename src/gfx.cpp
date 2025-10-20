@@ -182,6 +182,23 @@ void flip(){
     M5Cardputer.update();
     delay(33);           // ~30 FPS (1000ms / 30 = ~33.3ms)
 }
+const int NUM_BUTTONS = 6;
+
+bool currentButtonStates[NUM_BUTTONS] = { false };
+bool previousButtonStates[NUM_BUTTONS] = { false };
+
+void updateButtonStates() {
+    for (int i = 0; i < NUM_BUTTONS; i++) {
+        previousButtonStates[i] = currentButtonStates[i];
+        currentButtonStates[i] = btn(i, 0);
+    }
+}
+bool btnp(int i, int p = 0) {
+    if (p != 0) return false;
+    if (i < 0 || i >= NUM_BUTTONS) return false;
+
+    return currentButtonStates[i] && !previousButtonStates[i];
+}
 
 bool btn(int i, int p = 0){
     // Only support player 0 for now

@@ -158,6 +158,15 @@ int lua_btn(lua_State* L) {
     lua_pushboolean(L, result);
     return 1;
 }
+int lua_btnp(lua_State* L) {
+    int i = luaL_checkinteger(L, 1);
+    int p = luaL_optinteger(L, 2, 0);
+
+    bool pressed = btnp(i, p);
+    lua_pushboolean(L, pressed);
+    return 1;
+}
+
 
 int lua_circfill(lua_State* L) {
     int x0 = luaL_checkinteger(L, 1);
@@ -201,11 +210,23 @@ int lua_line(lua_State* L) {
     return 0;
 }
 
+int lua_assert_(lua_State* L) {
+    int cond = lua_toboolean(L, 1);  // get condition, false if nil or false
+
+    if (!cond) {
+        // You can throw a Lua error to stop the game
+        // Optionally provide a message
+        return luaL_error(L, "Assertion failed!");
+    }
+
+    return 0;  // nothing pushed to Lua stack
+}
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
   //INPUT
   lua_register(L, "btn", lua_btn);
+  lua_register(L, "btnp", lua_btnp);
   //GFX
   lua_register(L, "pset", lua_pset);
   lua_register(L, "cls", lua_cls);
@@ -227,5 +248,7 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "min", lua_min);
   lua_register(L, "mid", lua_mid);
   lua_register(L, "srand", lua_srand);
+
+  lua_register(L, "assert", lua_assert_);
 
 }
