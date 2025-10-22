@@ -97,7 +97,7 @@ int lua_sgn(lua_State* L) {
     double x = luaL_checknumber(L, 1);
     int sign = (x > 0) - (x < 0);
     lua_pushnumber(L, sign);
-    return 0;
+    return 1;
 }
 
 // sqrt(x)
@@ -114,7 +114,9 @@ int lua_pset(lua_State* L) {
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
   int col = luaL_optinteger(L, 3, currentColor);
-  pset(x, y, col);
+  
+  pset(x , y , col);
+
   return 0;
 }
 int lua_cls(lua_State* L) {
@@ -169,20 +171,20 @@ int lua_btnp(lua_State* L) {
 
 
 int lua_circfill(lua_State* L) {
-    int x0 = luaL_checkinteger(L, 1);
-    int y0 = luaL_checkinteger(L, 2);
+    int x0 = luaL_checkinteger(L, 1) ;
+    int y0 = luaL_checkinteger(L, 2) ;
     int r = luaL_checkinteger(L, 3);
-    int col = luaL_optinteger(L, 4, 7); // default color white
+    int col = luaL_optinteger(L, 4, 7);
     circfill(x0, y0, r, col);
     return 0;
 }
 
 // rectfill(x1, y1, x2, y2, col)
 int lua_rectfill(lua_State* L) {
-    int x1 = luaL_checkinteger(L, 1);
-    int y1 = luaL_checkinteger(L, 2);
-    int x2 = luaL_checkinteger(L, 3);
-    int y2 = luaL_checkinteger(L, 4);
+    int x1 = luaL_checkinteger(L, 1) ;
+    int y1 = luaL_checkinteger(L, 2) ;
+    int x2 = luaL_checkinteger(L, 3) ;
+    int y2 = luaL_checkinteger(L, 4) ;
     int col = luaL_optinteger(L, 5, 7);
     rectfill(x1, y1, x2, y2, col);
     return 0;
@@ -190,10 +192,10 @@ int lua_rectfill(lua_State* L) {
 
 // rect(x1, y1, x2, y2, col)
 int lua_rect(lua_State* L) {
-    int x1 = luaL_checkinteger(L, 1);
-    int y1 = luaL_checkinteger(L, 2);
-    int x2 = luaL_checkinteger(L, 3);
-    int y2 = luaL_checkinteger(L, 4);
+    int x1 = luaL_checkinteger(L, 1) ;
+    int y1 = luaL_checkinteger(L, 2) ;
+    int x2 = luaL_checkinteger(L, 3) ;
+    int y2 = luaL_checkinteger(L, 4) ;
     int col = luaL_optinteger(L, 5, 7);
     rect(x1, y1, x2, y2, col);
     return 0;
@@ -201,18 +203,24 @@ int lua_rect(lua_State* L) {
 
 // line(x0, y0, x1, y1, col)
 int lua_line(lua_State* L) {
-    int x0 = luaL_checkinteger(L, 1);
-    int y0 = luaL_checkinteger(L, 2);
-    int x1 = luaL_checkinteger(L, 3);
-    int y1 = luaL_checkinteger(L, 4);
+    int x0 = luaL_checkinteger(L, 1) ;
+    int y0 = luaL_checkinteger(L, 2) ;
+    int x1 = luaL_checkinteger(L, 3) ;
+    int y1 = luaL_checkinteger(L, 4) ;
     int col = luaL_optinteger(L, 5, 7);
     line(x0, y0, x1, y1, col);
     return 0;
 }
+
 int lua_pal(lua_State* L) {
     int c0 = luaL_checkinteger(L, 1);
     int c1 = luaL_checkinteger(L, 2);
     pal(c0, c1);
+    return 0;
+}
+int lua_camera(lua_State* L) {
+    cameraX = luaL_checkinteger(L, 1);
+    cameraY = luaL_checkinteger(L, 2);
     return 0;
 }
 
@@ -227,9 +235,17 @@ int lua_assert_(lua_State* L) {
 
     return 0;  // nothing pushed to Lua stack
 }
+int lua_print(lua_State* L) {
+  const char* str = luaL_checklstring(L, 1, NULL);  // Fix: add 3rd parameter
+
+  Serial.println(str);
+
+  return 0;  // No return values to Lua
+}
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
+  lua_register(L, "sprint", lua_print);
   //INPUT
   lua_register(L, "btn", lua_btn);
   lua_register(L, "btnp", lua_btnp);
@@ -242,6 +258,9 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "rect", lua_rect);
   lua_register(L, "line", lua_line);
   lua_register(L, "pal", lua_pal);
+  lua_register(L, "camera", lua_camera);
+
+  
   // Math
   lua_register(L, "abs", lua_abs);
   lua_register(L, "sin", lua_sin);

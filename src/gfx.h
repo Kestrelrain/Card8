@@ -2,9 +2,16 @@
 
 #include <Arduino.h>
 
+extern int cameraX;
+extern int cameraY;
+extern int cursorX;
+extern int cursorY;
+
 // Constants
 #define WIDTH 128
 #define HEIGHT 128
+
+
 
 // Function declarations
 void drawFramebuffer();
@@ -16,6 +23,7 @@ void flip();
 bool btn(int i, int p);
 bool btnp(int i, int p);
 void pal(int c0, int c1);
+void camera(int x, int y);
 void circfill(int x0, int y0, int r, int col);
 void rectfill(int x1, int y1, int x2, int y2, int col);
 void rect(int x1, int y1, int x2, int y2, int col);
