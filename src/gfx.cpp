@@ -61,7 +61,8 @@ void pal_reset() {
         paletteRemap[i] = i;
     }
 }
-/*
+
+
 void drawFramebuffer() {
     static uint16_t lcdBuffer[240 * 135];  // RGB565 buffer for full screen
 
@@ -81,8 +82,11 @@ void drawFramebuffer() {
             }
 
             // Remap and convert color
-            //uint8_t remappedColor = paletteRemap[colorIndex];
-            lcdBuffer[i++] = palette[color];
+            uint8_t remappedColor = paletteRemap[color];
+            //lcdBuffer[i++] = palette[color];
+            uint16_t rgb = palette[remappedColor];
+            lcdBuffer[y * WIDTH + x] = (rgb >> 8) | (rgb << 8);  // Swap bytes
+
         }
     }
 
@@ -93,8 +97,8 @@ void drawFramebuffer() {
     // Push the buffer to the screen
     M5.Lcd.pushImage(0, 0, WIDTH, HEIGHT, lcdBuffer);
 }
-*/
 
+/*
 void drawFramebuffer() {
     const int scale = 1; // or whatever scale you want
     const int scaledWidth = WIDTH * scale;
@@ -125,7 +129,7 @@ void drawFramebuffer() {
         }
     }
 }
-
+*/
 /*
 void drawFramebuffer() {
     const int scale = 1;  // DEBUG ONLY
