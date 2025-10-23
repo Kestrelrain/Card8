@@ -12,6 +12,7 @@ Pico-8 compatable console
     line
     pal
     camera
+    color
   #INPUT#
     btn
     btnp
