@@ -270,6 +270,11 @@ int lua_color(lua_State* L) {
 
     return 0;  // No values to return to Lua
 }
+int lua_sign(lua_State* L) {
+    int x = luaL_checkinteger(L, 1);
+    sign(x);
+    return 0;
+}
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
@@ -293,6 +298,7 @@ void register_lua_functions(lua_State* L) {
   
   // Math
   lua_register(L, "abs", lua_abs);
+  lua_register(L, "sign", lua_sign);
   lua_register(L, "sin", lua_sin);
   lua_register(L, "cos", lua_cos);
   lua_register(L, "atan2", lua_atan2);//Buggy

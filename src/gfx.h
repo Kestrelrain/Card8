@@ -20,6 +20,7 @@ uint8_t pget(int x, int y);
 void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y);
 void clip(int x, int y, int w, int h);
 void color(int col);
+uint8_t sign(int x);
 void cls(int col);
 void flip();
 bool btn(int i, int p);

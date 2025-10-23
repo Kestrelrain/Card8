@@ -268,6 +268,16 @@ void color(uint8_t col) {
     }
 }
 
+uint8_t sign(int x) {
+    if (x < 0) {
+        return -1;
+    } else if (x > 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 
 void oval(int x0, int y0, int x1, int y1, int col) {
 
