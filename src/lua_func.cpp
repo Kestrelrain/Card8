@@ -298,7 +298,7 @@ void register_lua_functions(lua_State* L) {
   
   // Math
   lua_register(L, "abs", lua_abs);
-  lua_register(L, "sign", lua_sign);
+  lua_register(L, "sgn", lua_sign);
   lua_register(L, "sin", lua_sin);
   lua_register(L, "cos", lua_cos);
   lua_register(L, "atan2", lua_atan2);//Buggy
