@@ -215,6 +215,7 @@ void setup() {
   M5.Lcd.println("Display Ok!");
   // Read and print .p8 file content from SD card
   readP8File("/game.p8");
+  currentColor = palette[0];
   Serial.println(luaCode);
   Serial.println("test");
   M5.Lcd.fillScreen(TFT_RED);

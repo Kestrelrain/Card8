@@ -1,6 +1,13 @@
 #include "gfx.h"
 #include <M5Cardputer.h>
 #include "mem.h"
+// Clipping rectangle, defaults to full screen (no clipping)
+int clipX = 0;
+int clipY = 0;
+int clipW = WIDTH;   // WIDTH is presumably 128
+int clipH = HEIGHT;  // HEIGHT is presumably 128
+
+bool clipEnabled = false;  // flag for whether clipping is active
 
 
 int cameraX = 0;
@@ -59,6 +66,23 @@ void pal(int c0, int c1) {
 void pal_reset() {
     for (int i = 0; i < 16; i++) {
         paletteRemap[i] = i;
+    }
+}
+
+void clip(int x = 0, int y = 0, int w = WIDTH, int h = HEIGHT) {
+    if (w == 0 || h == 0) {
+        // Disable clipping
+        clipEnabled = false;
+        clipX = 0;
+        clipY = 0;
+        clipW = WIDTH;
+        clipH = HEIGHT;
+    } else {
+        clipEnabled = true;
+        clipX = x;
+        clipY = y;
+        clipW = w;
+        clipH = h;
     }
 }
 
@@ -155,11 +179,29 @@ void drawFramebuffer() {
     }
 }
 */
+
+
+void color(int col) {
+
+    currentColor = col;
+
+}
+
 void pset(int worldX, int worldY, int color) {
+    if (color = -1){
+        color = currentColor;
+    }
+
     int screenX = worldX - cameraX;
     int screenY = worldY - cameraY;
 
     if (screenX < 0 || screenX >= WIDTH || screenY < 0 || screenY >= HEIGHT) return;
+    
+    // Clipping check
+    if (clipEnabled) {
+        if (screenX < clipX || screenX >= clipX + clipW || screenY < clipY || screenY >= clipY + clipH)
+            return; // outside clip area, skip drawing
+    }
 
     int index = screenY * WIDTH + screenX;
     int byteIndex = index / 2;
@@ -297,7 +339,10 @@ void circfill(int x0, int y0, int r, int col) {
 }
 
 
-void rectfill(int x1, int y1, int x2, int y2, int col) {
+void rectfill(int x1, int y1, int x2, int y2, int col = -1) {
+    if (col == -1) {
+        col = currentColor;  // Use the global default color
+    }
 
     for (int y = y1; y <= y2; y++)
         for (int x = x1; x <= x2; x++)
@@ -410,7 +455,7 @@ bool btn(int i, int p = 0){
 
 
 void cls(int col = -1) {
-    if (col == -1) col = currentColor;
+    if (col == -1) col = 0;
     col &= 0x0F;
     uint8_t packed = (col << 4) | col;
 

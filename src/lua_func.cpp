@@ -12,6 +12,24 @@ extern "C" {
 #include "math.h"
 
 
+// clip()
+int lua_clip(lua_State* L) {
+    int nargs = lua_gettop(L);
+    if (nargs == 0) {
+        clip(0, 0, 0, 0); // disable clipping
+    } else if (nargs == 4) {
+        int x = luaL_checkinteger(L, 1);
+        int y = luaL_checkinteger(L, 2);
+        int w = luaL_checkinteger(L, 3);
+        int h = luaL_checkinteger(L, 4);
+        clip(x, y, w, h);
+    } else {
+        return luaL_error(L, "clip() expects 0 or 4 arguments");
+    }
+    return 0;
+}
+
+
 // abs(x)
 int lua_abs(lua_State* L) {
     lua_pushnumber(L, fabs(luaL_checknumber(L, 1)));
@@ -235,17 +253,27 @@ int lua_assert_(lua_State* L) {
 
     return 0;  // nothing pushed to Lua stack
 }
-int lua_print(lua_State* L) {
+int lua_sprint(lua_State* L) {
   const char* str = luaL_checklstring(L, 1, NULL);  // Fix: add 3rd parameter
 
   Serial.println(str);
 
   return 0;  // No return values to Lua
 }
+
+int lua_color(lua_State* L) {
+    // Get the color index passed from Lua (it should be an integer)
+    int col = luaL_checkinteger(L, 1);
+
+    // Call the C++ color function to update the drawing color
+    color(col);
+
+    return 0;  // No values to return to Lua
+}
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
-  lua_register(L, "sprint", lua_print);
+  lua_register(L, "sprint", lua_sprint);
   //INPUT
   lua_register(L, "btn", lua_btn);
   lua_register(L, "btnp", lua_btnp);
@@ -259,6 +287,8 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "line", lua_line);
   lua_register(L, "pal", lua_pal);
   lua_register(L, "camera", lua_camera);
+  lua_register(L, "clip", lua_clip);
+  lua_register(L, "color", lua_color);
 
   
   // Math
