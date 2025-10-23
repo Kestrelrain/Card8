@@ -6,5 +6,26 @@ Pico-8 compatable console
     pset
     cls
     flip
+    circfill
+    rectfill
+    rect
+    line
+    pal
+    camera
+  #INPUT#
+    btn
+    btnp
   #MATH#
     rnd
+    abs
+    sin
+    cos
+    atan2
+    flr
+    sqrt
+    sgn
+    max
+    min
+    mid
+    srand
+  assert

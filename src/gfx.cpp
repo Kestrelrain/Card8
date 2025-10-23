@@ -71,8 +71,8 @@ void drawFramebuffer() {
         for (int x = 0; x < WIDTH; x++) {
 
             // Convert screen coordinates (x, y) to world coordinates
-            int srcX = x + cameraX;
-            int srcY = y + cameraY;
+            int srcX = x;
+            int srcY = y;
 
             // Read from framebuffer using world coordinates
             uint8_t color = 0;
@@ -155,12 +155,13 @@ void drawFramebuffer() {
     }
 }
 */
-void pset(int x, int y, int color) {
+void pset(int worldX, int worldY, int color) {
+    int screenX = worldX - cameraX;
+    int screenY = worldY - cameraY;
 
+    if (screenX < 0 || screenX >= WIDTH || screenY < 0 || screenY >= HEIGHT) return;
 
-    if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT) return;
-
-    int index = y * WIDTH + x;
+    int index = screenY * WIDTH + screenX;
     int byteIndex = index / 2;
     bool highNibble = (index % 2 == 0);
 
@@ -336,24 +337,60 @@ void flip(){
     M5Cardputer.update();
     delay(33);           // ~30 FPS (1000ms / 30 = ~33.3ms)
 }
+struct BtnState {
+  bool pressedLastFrame = false;
+  int holdFrames = 0;
+};
 const int NUM_BUTTONS = 6;
 
-bool currentButtonStates[NUM_BUTTONS] = { false };
-bool previousButtonStates[NUM_BUTTONS] = { false };
+BtnState btnStates[NUM_BUTTONS];
 
-void updateButtonStates() {
-    for (int i = 0; i < NUM_BUTTONS; i++) {
-        previousButtonStates[i] = currentButtonStates[i];
-        currentButtonStates[i] = btn(i, 0);
+//bool prevBtnStates[6] = {false, false, false, false, false, false};
+// btnp: returns true only on the frame the button was pressed
+const int REPEAT_DELAY = 4;  // frames before repeat starts
+const int REPEAT_INTERVAL = 4; // repeat 
+
+bool btnp(int i, int p = 0) {
+  if (p != 0) return false;
+
+  bool pressedNow = btn(i, p);
+  BtnState& state = btnStates[i];
+
+  bool result = false;
+
+  if (pressedNow) {
+    if (!state.pressedLastFrame) {
+      result = true;
+      state.holdFrames = 0;
+    } else {
+      state.holdFrames++;
+      if (state.holdFrames > REPEAT_DELAY && ((state.holdFrames - REPEAT_DELAY) % REPEAT_INTERVAL == 0)) {
+        result = true;
+      }
     }
+  } else {
+    state.holdFrames = 0;
+  }
+
+  state.pressedLastFrame = pressedNow;
+  return result;
 }
+/*
 bool btnp(int i, int p = 0) {
     if (p != 0) return false;
-    if (i < 0 || i >= NUM_BUTTONS) return false;
 
-    return currentButtonStates[i] && !previousButtonStates[i];
+    bool current = btn(i, p);
+    bool pressed = false;
+
+    if (i >= 0 && i < 6) {
+        // btnp is true if currently pressed AND was not pressed previous frame
+        pressed = (current && !prevBtnStates[i]);
+        // update previous state for next frame
+        prevBtnStates[i] = current;
+    }
+    return pressed;
 }
-
+*/
 bool btn(int i, int p = 0){
     // Only support player 0 for now
     if (p != 0) return false;

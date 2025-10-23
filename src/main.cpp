@@ -107,6 +107,8 @@ void run_frame(lua_State* L) {
   // Delay for ~60 FPS
   delay(16);
 }
+
+
 void readP8File(const char* filename) {
   File p8file = SD.open(filename);
   if (!p8file) {
@@ -172,6 +174,11 @@ void readP8File(const char* filename) {
   //M5.Lcd.println(luaCode);
   Serial.println(luaCode);
 }
+
+
+
+
+
 
 lua_State* L = luaL_newstate();
 void setup() {
