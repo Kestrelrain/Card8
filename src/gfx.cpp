@@ -180,15 +180,16 @@ void drawFramebuffer() {
 }
 */
 
-
+/*
 void color(int col) {
 
     currentColor = col;
 
 }
+*/
 
 void pset(int worldX, int worldY, int color) {
-    if (color = -1){
+    if (color == -1){
         color = currentColor;
     }
 
@@ -226,33 +227,6 @@ uint8_t pget(int x, int y) {
 
     uint8_t byte = memory[SCREEN_MEM + byteIndex];
     return highNibble ? (byte >> 4) & 0x0F : byte & 0x0F;
-}
-
-void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
-    int sx = (n % 16) * 8;
-    int sy = (n / 16) * 8;
-
-    for (int tileY = 0; tileY < h; tileY++) {
-        for (int tileX = 0; tileX < w; tileX++) {
-            for (int y = 0; y < 8; y++) {
-                for (int x = 0; x < 8; x++) {
-                    int srcX = sx + tileX * 8 + (flip_x ? 7 - x : x);
-                    int srcY = sy + tileY * 8 + (flip_y ? 7 - y : y);
-
-                    int srcIndex = srcY * 128 + srcX;
-                    int byteIndex = srcIndex / 2;
-                    bool highNibble = (srcIndex % 2 == 0);
-
-                    uint8_t byte = memory[GFX_MEM + byteIndex];
-                    uint8_t color = highNibble ? (byte >> 4) & 0x0F : byte & 0x0F;
-
-                    if (color != 0) {
-                        pset(dx + tileX * 8 + x, dy + tileY * 8 + y, color);
-                    }
-                }
-            }
-        }
-    }
 }
 
 
@@ -474,3 +448,100 @@ void cls(int col = -1) {
     }
 }
 
+uint8_t sget(uint8_t x, uint8_t y) {
+    if (x >= 128 || y >= 128)
+        return 0;
+    uint16_t addr = GFX_MEM + (y * 64) + (x >> 1); // 2 pixels per byte
+    uint8_t byte = memory[addr];
+    if (x & 1)
+        return byte >> 4;  // right pixel
+    else
+        return byte & 0x0F; // left pixel
+}
+
+void sset(uint8_t x, uint8_t y, uint8_t col) {
+    if (x >= 128 || y >= 128)
+        return;
+    uint16_t addr = GFX_MEM + (y * 64) + (x >> 1);
+    uint8_t byte = memory[addr];
+    if (x & 1)
+        byte = (byte & 0x0F) | (col << 4); // right pixel
+    else
+        byte = (byte & 0xF0) | (col & 0x0F); // left pixel
+    memory[addr] = byte;
+}
+/*
+void spr(int n, int x, int y, int w, int h, bool flip_x, bool flip_y) {
+    for (int ty = 0; ty < h; ty++) {
+        for (int tx = 0; tx < w; tx++) {
+            int sx = (n % 16) * 8 + tx * 8;
+            int sy = (n / 16) * 8 + ty * 8;
+
+            for (int py = 0; py < 8; py++) {
+                for (int px = 0; px < 8; px++) {
+                    int src_x = flip_x ? (7 - px) : px;
+                    int src_y = flip_y ? (7 - py) : py;
+                    uint8_t col = sget(sx + src_x, sy + src_y);
+                    if (col != 0) // color 0 = transparent
+                        pset(x + px + tx*8, y + py + ty*8, col);
+                }
+            }
+        }
+    }
+}
+*/
+void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
+    int sx = (n % 16) * 8;
+    int sy = (n / 16) * 8;
+
+    for (int tileY = 0; tileY < h; tileY++) {
+        for (int tileX = 0; tileX < w; tileX++) {
+            for (int y = 0; y < 8; y++) {
+                for (int x = 0; x < 8; x++) {
+                    int srcX = sx + tileX * 8 + (flip_x ? 7 - x : x);
+                    int srcY = sy + tileY * 8 + (flip_y ? 7 - y : y);
+
+                    int srcIndex = srcY * 128 + srcX;
+                    int byteIndex = srcIndex / 2;
+                    bool highNibble = (srcIndex % 2 == 0);
+
+                    uint8_t byte = memory[GFX_MEM + byteIndex];
+                    uint8_t color = highNibble ? (byte >> 4) & 0x0F : byte & 0x0F;
+
+                    if (color != 0) {
+                        pset(dx + tileX * 8 + x, dy + tileY * 8 + y, color);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void sspr(int sx, int sy, int sw, int sh,
+          int dx, int dy, int dw, int dh,
+          bool flip_x, bool flip_y)
+{
+    for (int y = 0; y < dh; y++) {
+        for (int x = 0; x < dw; x++) {
+            // map destination pixel to source pixel
+            int src_x = sx + (flip_x ? (sw - 1 - (x * sw) / dw) : ((x * sw) / dw));
+            int src_y = sy + (flip_y ? (sh - 1 - (y * sh) / dh) : ((y * sh) / dh));
+
+            uint8_t col = sget(src_x, src_y);
+            if (col != 0)
+                pset(dx + x, dy + y, col);
+        }
+    }
+}
+
+
+int mget(int x, int y) {
+    if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return 0;
+    return memory[MAP_MEM + y * MAP_WIDTH + x];
+}
+
+int mset(int x, int y, int tile) {
+    if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return 0;
+    memory[MAP_MEM + y * MAP_WIDTH + x] = tile;
+    return tile;
+}

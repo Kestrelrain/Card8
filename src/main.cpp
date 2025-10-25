@@ -118,6 +118,8 @@ void readP8File(const char* filename) {
 
   bool inGfxSection = false;
   bool inLuaSection = false;
+  bool inMapSection = false;
+  int mapY = 0;
   int gfxY = 0;
 
   while (p8file.available()) {
@@ -141,7 +143,19 @@ void readP8File(const char* filename) {
       inGfxSection = false;
       inLuaSection = false;
     }
+    
+    if (inMapSection && mapY < 16) { // maps are 16x16 tiles
+        size_t len = line.length();
+        for (int x = 0; x < (int)std::min(len, (size_t)16); x++) {
+            char c = line.charAt(x);
+            uint8_t tile = (c >= '0' && c <= '9') ? (c - '0')
+                        : (c >= 'a' && c <= 'f') ? (c - 'a' + 10)
+                        : 0;
+            memory[MAP_MEM + mapY*16 + x] = tile;
+        }
+        mapY++;
 
+      }
     if (inGfxSection && gfxY < 128) {
       // Each line is 128 pixels = 64 bytes (2 pixels per byte)
       size_t len = line.length();

@@ -241,6 +241,83 @@ int lua_camera(lua_State* L) {
     cameraY = luaL_checkinteger(L, 2);
     return 0;
 }
+int lua_sget(lua_State* L) {
+    int x = luaL_checkinteger(L, 1);
+    int y = luaL_checkinteger(L, 2);
+    int result = sget(x, y);
+    lua_pushnumber(L, result);
+    return 1;
+}
+int lua_sset(lua_State* L) {
+    int x = luaL_checkinteger(L, 1);
+    int y = luaL_checkinteger(L, 2);
+    int col = luaL_checkinteger(L, 3);
+    sset(x, y, col);
+    return 0;
+}
+
+int lua_spr(lua_State* L) {
+    // Get the number of arguments passed from Lua
+    int n = luaL_checkinteger(L, 1);   // The sprite number
+    int x = luaL_checkinteger(L, 2);   // The X coordinate
+    int y = luaL_checkinteger(L, 3);   // The Y coordinate
+
+    // Set default values for the remaining arguments
+    int w = 1;  // Default width
+    int h = 1;  // Default height
+    bool flip_x = false;  // Default no horizontal flip
+    bool flip_y = false;  // Default no vertical flip
+
+    // Check if 4th, 5th, 6th, or 7th arguments are provided
+    if (lua_gettop(L) >= 4) {
+        w = luaL_checkinteger(L, 4);  // Width
+    }
+    if (lua_gettop(L) >= 5) {
+        h = luaL_checkinteger(L, 5);  // Height
+    }
+    if (lua_gettop(L) >= 6) {
+        flip_x = lua_toboolean(L, 6);  // Horizontal flip
+    }
+    if (lua_gettop(L) >= 7) {
+        flip_y = lua_toboolean(L, 7);  // Vertical flip
+    }
+
+    // Call the spr function with the arguments
+    spr(n, x, y, w, h, flip_x, flip_y);
+
+    return 0;
+}
+
+int lua_sspr(lua_State* L) {
+    int sx = luaL_checkinteger(L, 1);
+    int sy = luaL_checkinteger(L, 2);
+    int sw = luaL_checkinteger(L, 3);
+    int sh = luaL_checkinteger(L, 4);
+    int dx = luaL_checkinteger(L, 5);
+    int dy = luaL_checkinteger(L, 6);
+    int dw = luaL_checkinteger(L, 7);
+    int dh = luaL_checkinteger(L, 8);
+    bool flip_x = luaL_checkinteger(L, 9);
+    bool flip_y = luaL_checkinteger(L, 10);
+    sspr(sx, sy, sw, sh, dx, dy, dw, dh, flip_x, flip_y);
+    return 0;
+}
+
+int lua_mget(lua_State* L) {
+    int x = luaL_checkinteger(L, 1);
+    int y = luaL_checkinteger(L, 2);
+    mget(x, y);
+    return 0;
+}
+
+int lua_mset(lua_State* L) {
+    int x = luaL_checkinteger(L, 1);
+    int y = luaL_checkinteger(L, 2);
+    int tile = luaL_checkinteger(L, 3);
+    mset(x, y, tile);
+    return 0;
+}
+
 
 int lua_assert_(lua_State* L) {
     int cond = lua_toboolean(L, 1);  // get condition, false if nil or false
@@ -294,6 +371,13 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "camera", lua_camera);
   lua_register(L, "clip", lua_clip);
   lua_register(L, "color", lua_color);
+  lua_register(L, "sget", lua_sget);
+  lua_register(L, "sset", lua_sset);
+  lua_register(L, "spr", lua_spr);
+  lua_register(L, "sspr", lua_sspr);
+  lua_register(L, "mset", lua_mset);
+  lua_register(L, "mget", lua_mget);
+
 
   
   // Math
