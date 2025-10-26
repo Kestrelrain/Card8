@@ -129,6 +129,7 @@ void readP8File(const char* filename) {
     if (line.startsWith("__gfx__")) {
       inGfxSection = true;
       inLuaSection = false;
+      inMapSection = false;
       gfxY = 0;
       continue;
     }
@@ -136,6 +137,14 @@ void readP8File(const char* filename) {
       M5.Lcd.println("lua");
       inLuaSection = true;
       inGfxSection = false;
+      inMapSection = false;
+      continue;
+    }
+    if (line.startsWith("__map__")) {
+      inLuaSection = false;
+      inGfxSection = false;
+      inMapSection = true;
+      mapY = 0;
       continue;
     }
 
@@ -144,18 +153,22 @@ void readP8File(const char* filename) {
       inLuaSection = false;
     }
     
-    if (inMapSection && mapY < 16) { // maps are 16x16 tiles
+    if (inMapSection) {
+      if (mapY < 16) {  // Assuming the map is 16 rows
         size_t len = line.length();
-        for (int x = 0; x < (int)std::min(len, (size_t)16); x++) {
-            char c = line.charAt(x);
-            uint8_t tile = (c >= '0' && c <= '9') ? (c - '0')
-                        : (c >= 'a' && c <= 'f') ? (c - 'a' + 10)
-                        : 0;
-            memory[MAP_MEM + mapY*16 + x] = tile;
+        for (int x = 0; x < len; x += 2) {  // Step by 2 to read two characters at a time
+            // Extract the 2-character tile index
+            String tile_hex = line.substring(x, x + 2);  // Get 2 characters at a time (e.g., "01", "03", etc.)
+
+            // Convert hex string to tile index (base 16 to decimal)
+            int tile_index = strtol(tile_hex.c_str(), nullptr, 16);  // Convert hex string to integer
+
+            // Store the tile index in the map (MAP_MEM starts at 0x2000)
+            memory[MAP_MEM + mapY * 128 + (x / 2)] = tile_index;
         }
         mapY++;
-
-      }
+        }
+      } 
     if (inGfxSection && gfxY < 128) {
       // Each line is 128 pixels = 64 bytes (2 pixels per byte)
       size_t len = line.length();

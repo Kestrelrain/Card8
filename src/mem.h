@@ -22,6 +22,7 @@ extern uint8_t memory[CARD_MEM_SIZE];
 #define SCREEN_MEM      0x6000   // 0x6000 - 0x7FFF (Screen buffer, 128x128, 4bpp = 8K)
 
 #define currentColor memory[DRAW_COLOR]
+//#define spriteFlags memory[GFX_FLAGS_MEM]
 
 
 

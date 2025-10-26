@@ -12,7 +12,7 @@ extern int cursorY;
 #define HEIGHT 128
 
 #define MAP_WIDTH 128
-#define MAP_HEIGHT 128
+#define MAP_HEIGHT 64
 
 // Function declarations
 void drawFramebuffer();
@@ -38,6 +38,9 @@ void sspr(int sx, int sy, int sw, int sh, int dx, int dy, int dw, int dh, bool f
 void print(const char* str,int x, int y,int col );
 int mget(int x, int y);
 int mset(int x, int y, int tile);
+void map(int cel_x, int cel_y, int sx, int sy, int cel_w, int cel_h, int layer );
+bool fget(uint8_t n, uint8_t f);
+uint8_t fget(uint8_t n);
 
 // External framebuffer and palette
 extern uint8_t memory[];

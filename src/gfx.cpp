@@ -490,7 +490,7 @@ void spr(int n, int x, int y, int w, int h, bool flip_x, bool flip_y) {
     }
 }
 */
-void spr(int n, int dx, int dy, int w, int h, bool flip_x, bool flip_y) {
+void spr(int n, int dx, int dy, int w = 1, int h = 1, bool flip_x = false, bool flip_y = false) {
     int sx = (n % 16) * 8;
     int sy = (n / 16) * 8;
 
@@ -544,4 +544,17 @@ int mset(int x, int y, int tile) {
     if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return 0;
     memory[MAP_MEM + y * MAP_WIDTH + x] = tile;
     return tile;
+}
+
+
+
+void map(int cel_x, int cel_y, int sx, int sy, int cel_w, int cel_h, int layer = 0) {
+	for (int y = 0; y < cel_h; y++) {
+		for (int x = 0; x < cel_w; x++) {
+			uint8_t cell = mget(cel_x + x, cel_y + y);
+            if (cell != 0) {
+                spr(cell, sx + x * 8, sy + y * 8);
+            }
+		}
+	}
 }

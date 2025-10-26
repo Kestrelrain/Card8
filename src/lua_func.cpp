@@ -352,6 +352,25 @@ int lua_sign(lua_State* L) {
     sign(x);
     return 0;
 }
+
+int lua_map(lua_State* L) {
+    int cel_x = luaL_checkinteger(L, 1);
+    int cel_y = luaL_checkinteger(L, 2);
+    int sx = luaL_checkinteger(L, 3);
+    int sy = luaL_checkinteger(L, 4);
+    int cel_w = luaL_checkinteger(L, 5);
+    int cel_h = luaL_checkinteger(L, 6);
+    int layer = 1;
+
+    // Check if 7th argument is provided
+    if (lua_gettop(L) >= 7) {
+        layer = luaL_checkinteger(L, 7); 
+    }
+
+    map(cel_x, cel_y, sx, sy, cel_w, cel_h, layer);
+    return 0;
+}
+
 // similarly lua_spr, lua_cls...
 
 void register_lua_functions(lua_State* L) {
@@ -377,6 +396,7 @@ void register_lua_functions(lua_State* L) {
   lua_register(L, "sspr", lua_sspr);
   lua_register(L, "mset", lua_mset);
   lua_register(L, "mget", lua_mget);
+  lua_register(L, "map", lua_map);
 
 
   
