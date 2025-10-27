@@ -151,6 +151,7 @@ void readP8File(const char* filename) {
     if (line.startsWith("__")) {
       inGfxSection = false;
       inLuaSection = false;
+      inMapSection = false;
     }
     
     if (inMapSection) {
